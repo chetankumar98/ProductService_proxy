@@ -1,9 +1,11 @@
 package com.example.productservice_proxy.services;
 
+import com.example.productservice_proxy.models.Product;
+
 public interface IProductService {
     String getAllProducts();
 
-    String getSingleProduct();
+    Product getSingleProduct(Long productId);
 
     String addNewProduct();
 

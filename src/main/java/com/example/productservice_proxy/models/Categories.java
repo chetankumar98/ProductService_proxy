@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.util.List;
 @Getter
 @Setter
-@AllArgsConstructor
+//@AllArgsConstructor
 public class Categories extends BaseModels {
     private String name;
     private String description;
