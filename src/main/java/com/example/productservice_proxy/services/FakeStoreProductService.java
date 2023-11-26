@@ -30,14 +30,14 @@ public class FakeStoreProductService implements IProductService{
         this.fakeStoreClient = fakeStoreClient;
     }
 
-    public <T> ResponseEntity<T> requestForEntity(HttpMethod httpMethod, String url, @Nullable Object request,
-                                                  Class<T> responseType, Object... uriVariables) throws RestClientException {
-        RestTemplate restTemplate = restTemplateBuilder.requestFactory(HttpComponentsClientHttpRequestFactory.class).build();
-        RequestCallback requestCallback = restTemplate.httpEntityCallback(request, responseType);
-        ResponseExtractor<ResponseEntity<T>> responseExtractor = restTemplate.responseEntityExtractor(responseType);
-
-        return restTemplate.execute(url, httpMethod, requestCallback, responseExtractor, uriVariables);
-    }
+//    public <T> ResponseEntity<T> requestForEntity(HttpMethod httpMethod, String url, @Nullable Object request,
+//                                                  Class<T> responseType, Object... uriVariables) throws RestClientException {
+//        RestTemplate restTemplate = restTemplateBuilder.requestFactory(HttpComponentsClientHttpRequestFactory.class).build();
+//        RequestCallback requestCallback = restTemplate.httpEntityCallback(request, responseType);
+//        ResponseExtractor<ResponseEntity<T>> responseExtractor = restTemplate.responseEntityExtractor(responseType);
+//
+//        return restTemplate.execute(url, httpMethod, requestCallback, responseExtractor, uriVariables);
+//    }
     @Override
     public List<Product> getAllProducts(){
 //        RestTemplate restTemplate = restTemplateBuilder.build();
@@ -64,11 +64,12 @@ public class FakeStoreProductService implements IProductService{
     }
     @Override
     public Product getSingleProduct(Long productId){
-        RestTemplate restTemplate = restTemplateBuilder.build();
-        ResponseEntity<FakeStoreProductDTO> productDTO = restTemplate.getForEntity("https://fakestoreapi.com/products/{id}",
-                FakeStoreProductDTO.class, productId);
-
-        Product product = getProduct(productDTO.getBody());
+//        RestTemplate restTemplate = restTemplateBuilder.build();
+//        ResponseEntity<FakeStoreProductDTO> productDTO = restTemplate.getForEntity("https://fakestoreapi.com/products/{id}",
+//                FakeStoreProductDTO.class, productId);
+//
+        FakeStoreProductDTO fakeStoreProductDTO = fakeStoreClient.getSingleProduct(productId);
+        Product product = getProduct(fakeStoreProductDTO);
 
         return product;
     }
@@ -77,8 +78,9 @@ public class FakeStoreProductService implements IProductService{
 
     @Override
     public Product addNewProduct(IClientProductDTO productDTO){
-        RestTemplate restTemplate = restTemplateBuilder.build();
-        restTemplate.postForEntity("https://fakestoreapi.com/products",productDTO,ProductDTO.class);
+//        RestTemplate restTemplate = restTemplateBuilder.build();
+//        restTemplate.postForEntity("https://fakestoreapi.com/products",productDTO,ProductDTO.class);
+        IClientProductDTO productDTO1 = fakeStoreClient.addNewProduct(productDTO);
         Product product = getProduct((FakeStoreProductDTO) productDTO);
         return product;
     }
@@ -86,7 +88,7 @@ public class FakeStoreProductService implements IProductService{
 
     @Override
     public Product updateProduct(Long productID, Product product){
-        RestTemplate restTemplate = restTemplateBuilder.build();
+//        RestTemplate restTemplate = restTemplateBuilder.build();
 
         FakeStoreProductDTO fakeStoreProductDTO = new FakeStoreProductDTO();
         fakeStoreProductDTO.setDescription(product.getDescription());
@@ -95,11 +97,11 @@ public class FakeStoreProductService implements IProductService{
         fakeStoreProductDTO.setPrice(product.getPrice());
         fakeStoreProductDTO.setCategory(product.getCategory().getName());
 
-        ResponseEntity<FakeStoreProductDTO> fakeStoreProductDTOResponseEntity =
-                requestForEntity(HttpMethod.PATCH, "https://fakestoreapi.com/products/{id}",fakeStoreProductDTO,
-                        FakeStoreProductDTO.class,productID);
+//        ResponseEntity<FakeStoreProductDTO> fakeStoreProductDTOResponseEntity =
+//                requestForEntity(HttpMethod.PATCH, "https://fakestoreapi.com/products/{id}",fakeStoreProductDTO,
+//                        FakeStoreProductDTO.class,productID);
 
-        FakeStoreProductDTO fakeStoreProductDTO1 = fakeStoreProductDTOResponseEntity.getBody();
+        FakeStoreProductDTO fakeStoreProductDTO1 = fakeStoreClient.updateProduct(productID,fakeStoreProductDTO);
         return getProduct(fakeStoreProductDTO1);
 
     }
